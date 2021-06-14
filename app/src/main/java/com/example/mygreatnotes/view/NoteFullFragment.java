@@ -1,6 +1,7 @@
 package com.example.mygreatnotes.view;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,10 +14,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.mygreatnotes.R;
@@ -76,6 +76,7 @@ public class NoteFullFragment extends Fragment implements Observer {
         return inflater.inflate(R.layout.fragment_note_full, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -88,19 +89,45 @@ public class NoteFullFragment extends Fragment implements Observer {
 
         noteHeader.setText(noteUnit.getNoteName());
         noteText.setText(noteUnit.getNoteText());
-        noteDate.setText(noteUnit.getNoteDateOfCreate().toString());
+        noteDate.setText(noteUnit.getNoteDateToString());
+        Calendar noteCalendar = noteUnit.getNoteDate();
 
-        MaterialButton setTimeAndDate = view.findViewById(R.id.button_date_and_time);
+        MaterialButton btnSetDate = view.findViewById(R.id.button_date);
+        MaterialButton btnSetTime = view.findViewById(R.id.button_time);
 
-        DatePickerDialog datePicker = new DatePickerDialog(getContext());
+        DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int setYear, int setMonth, int setDay) {
+                noteCalendar.set(setYear,setMonth,setDay);
+                noteUnit.setNoteNewDate(noteCalendar);
+                noteDate.setText(noteUnit.getNoteDateToString());
+            }
+        }, noteCalendar.get(Calendar.YEAR), noteCalendar.get(Calendar.MONTH),noteCalendar.get(Calendar.DAY_OF_MONTH));
 
-        setTimeAndDate.setOnClickListener(new View.OnClickListener() {
+        TimePickerDialog timePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int setHourOfDay, int setMinute) {
+                noteCalendar.set(Calendar.HOUR_OF_DAY,setHourOfDay);
+                noteCalendar.set(Calendar.MINUTE,setMinute);
+                noteUnit.setNoteNewDate(noteCalendar);
+                noteDate.setText(noteUnit.getNoteDateToString());
+            }
+        }, noteCalendar.get(Calendar.HOUR_OF_DAY), noteCalendar.get(Calendar.MINUTE),true);
+
+        btnSetDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePicker.show();
-                // TODO
             }
         });
+
+        btnSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePicker.show();
+            }
+        });
+
     }
 
     @Override

@@ -26,10 +26,6 @@ public class NotePresenterFragment {
         return noteRepository.getNotes().size();
     }
 
-    public String getNotesHeader(int i) {
-        return noteRepository.getNotes().get(i).getNoteName();
-    }
-
     public NoteUnit getNote(int i) {
         return noteRepository.getNotes().get(i);
     }

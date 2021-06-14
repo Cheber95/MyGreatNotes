@@ -34,11 +34,19 @@
         tools:text="@string/sometext" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_date_and_time"
+        android:id="@+id/button_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/button_date_and_time"
+        android:text="@string/button_date"
+        android:layout_margin="@dimen/button_margin"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/button_time"
         android:layout_margin="@dimen/button_margin"/>
 
 </LinearLayout>
