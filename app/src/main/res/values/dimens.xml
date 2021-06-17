@@ -2,4 +2,5 @@
 <resources>
     <dimen name="note_item_margin">10sp</dimen>
     <dimen name="button_margin">5dp</dimen>
+    <dimen name="nav_drawer_height">100dp</dimen>
 </resources>

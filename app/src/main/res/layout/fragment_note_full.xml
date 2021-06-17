@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.MaterialComponents.Caption"
-        android:gravity="right"
+        android:gravity="end"
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />
 
