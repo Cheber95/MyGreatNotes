@@ -9,7 +9,7 @@ public class NoteRepository  {
 
     public List<NoteUnit> getNotes() {
         ArrayList<NoteUnit> noteRepo = new ArrayList<>();
-        int noteCount = 5;
+        int noteCount = 15;
         for (int i = 1; i <= noteCount; i++) {
             noteRepo.add(new NoteUnit(i,"Заметка № " + i, "текст заметки № " + i));
         }
