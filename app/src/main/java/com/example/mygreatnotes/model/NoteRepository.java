@@ -1,9 +1,11 @@
 package com.example.mygreatnotes.model;
 
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoteRepository {
+public class NoteRepository  {
 
     public List<NoteUnit> getNotes() {
         ArrayList<NoteUnit> noteRepo = new ArrayList<>();
