@@ -1,12 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_note_textview"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:text="@string/sometext"
-    style="@style/TextAppearance.AppCompat.Display1"
-    android:padding="@dimen/note_item_margin"
-    android:gravity="center_horizontal">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/note_item_margin">
 
-</TextView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/note_item_margin_small"
+        android:layout_marginBottom="@dimen/note_item_margin_small"
+        >
+
+        <ImageView
+            android:id="@+id/note_pic"
+            android:layout_width="@dimen/note_pic_width"
+            android:layout_height="@dimen/note_pic_height"
+            android:src="@drawable/ic_baseline_receipt_24"
+            android:scaleType="fitCenter"
+            app:tint="@color/appbar_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/note_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_title"
+            tools:text="@string/sometext"
+            android:layout_marginStart="@dimen/note_item_margin"
+            android:layout_marginEnd="@dimen/note_item_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:layout_constraintStart_toEndOf="@+id/note_pic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/note_text"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_text"
+            android:layout_marginStart="@dimen/note_item_margin"
+            android:layout_marginEnd="@dimen/note_item_margin"
+            tools:text="@string/sometext"
+            app:layout_constraintStart_toEndOf="@+id/note_pic"
+            app:layout_constraintTop_toBottomOf="@id/note_title"
+            app:layout_constraintBottom_toTopOf="@+id/note_date"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_date"
+            android:layout_marginEnd="@dimen/note_item_margin"
+            tools:text="@string/sometext"
+            android:layout_gravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/note_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

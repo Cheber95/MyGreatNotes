@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,19 +25,38 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         PublisherHolder {
 
     public static String ARG_NOTE = "ARG_NOTE";
+    public static String KEY_PRESENTER = "KEY_PRESENTER";
     public final Publisher publisher = new Publisher();
-    private final NotePresenterFragment notePresenterFragment= new NotePresenterFragment(this);
+    private NotePresenterFragment notePresenterFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
 
-        NoteListFragment noteListFragment = NoteListFragment.newInstance(notePresenterFragment);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container,noteListFragment)
-                .commit();
+
+
+        NoteListFragment noteListFragment;
+        boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
+
+        if (savedInstanceState == null) {
+            notePresenterFragment = new NotePresenterFragment(this);
+            noteListFragment = NoteListFragment.newInstance(notePresenterFragment);
+            if (isLandscape) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container,noteListFragment)
+                        .commit();
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container,noteListFragment)
+                        .commit();
+            }
+        } else {
+            notePresenterFragment = savedInstanceState.getParcelable(KEY_PRESENTER);
+            noteListFragment = NoteListFragment.newInstance(notePresenterFragment);
+        }
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.appbar);
@@ -81,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void onNoteClicked(NoteUnit noteUnit) {
 
         boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
+        
 
         if (isLandscape) {
             getSupportFragmentManager()
@@ -103,13 +124,13 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle instanceState) {
+        instanceState.putParcelable(KEY_PRESENTER, notePresenterFragment);
         super.onSaveInstanceState(instanceState);
-        // TODO
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle instanceState) {
+        notePresenterFragment = instanceState.getParcelable(KEY_PRESENTER);
         super.onRestoreInstanceState(instanceState);
-        // TODO
     }
 }
