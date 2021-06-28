@@ -2,6 +2,7 @@ package com.example.mygreatnotes.view;
 
 import androidx.annotation.NavigationRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,9 +22,14 @@ import com.example.mygreatnotes.presenter.Publisher;
 import com.example.mygreatnotes.presenter.PublisherHolder;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NoteListFragment.OnNoteClicked,
-        PublisherHolder {
+public class MainActivity extends AppCompatActivity implements
+        NoteListFragment.OnNoteClicked,
+        PublisherHolder,
+        NoteFullFragment.OnNoteEditSelected,
+        NoteEditFragment.OnNoteEdited,
+        NoteFullFragment.OnNoteDeleteSelected {
 
+    private static final String NOTE_EDIT = "NOTE_EDIT";
     public static String ARG_NOTE = "ARG_NOTE";
     public static String KEY_PRESENTER = "KEY_PRESENTER";
     public final Publisher publisher = new Publisher();
@@ -33,8 +39,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
-
-
 
         NoteListFragment noteListFragment;
         boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
@@ -117,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         }
     }
 
+
+
     @Override
     public Publisher getPublisher() {
         return publisher;
@@ -132,5 +138,37 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     protected void onRestoreInstanceState(@NonNull Bundle instanceState) {
         notePresenterFragment = instanceState.getParcelable(KEY_PRESENTER);
         super.onRestoreInstanceState(instanceState);
+    }
+
+    @Override
+    public void onNoteEditSelected(NoteUnit noteUnit) {
+        boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
+
+        if (isLandscape) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(NOTE_EDIT)
+                    .replace(R.id.container_details, NoteEditFragment.newInstance(noteUnit))
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(NOTE_EDIT)
+                    .replace(R.id.container, NoteEditFragment.newInstance(noteUnit))
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onNoteEdited(NoteUnit noteUnit, @Nullable String noteNewName, @Nullable String noteNewText) {
+        notePresenterFragment.editNote(noteUnit,noteNewName,noteNewText);
+        getSupportFragmentManager()
+                .popBackStack();
+    }
+
+    @Override
+    public void onNoteDeleteSelected(NoteUnit noteUnit) {
+        notePresenterFragment.deleteNote(noteUnit);
+        getSupportFragmentManager().popBackStack();
     }
 }

@@ -20,11 +20,12 @@ public class NotePresenterFragment implements Parcelable {
     private static final String KEY_REPO = "KEY_REPO";
     private MainActivity mainActivity;
     private List<NoteUnit> noteRepository;
+    private NoteRepository noteRepo;
     private NotesAdapterRecyclerView notesAdapterRecyclerView;
 
     public NotePresenterFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        NoteRepository noteRepo = new NoteRepository();
+        noteRepo = new NoteRepository();
         this.noteRepository = noteRepo.getNotes();
         notesAdapterRecyclerView = new NotesAdapterRecyclerView();
         notesAdapterRecyclerView.setData(noteRepo.getNotes());
@@ -32,6 +33,7 @@ public class NotePresenterFragment implements Parcelable {
 
     protected NotePresenterFragment(Parcel in) {
          in.readList(this.noteRepository,NoteUnit.class.getClassLoader());
+         noteRepo.setData(noteRepository);
     }
 
     public static final Creator<NotePresenterFragment> CREATOR = new Creator<NotePresenterFragment>() {
@@ -65,6 +67,16 @@ public class NotePresenterFragment implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(noteRepository);
+        dest.writeList(noteRepo.getNotes());
+    }
+
+    public void editNote(NoteUnit noteUnit, String noteNewName, String noteNewText) {
+        noteRepo.editNote(noteUnit,noteNewName,noteNewText);
+    }
+
+    public void deleteNote(NoteUnit noteUnit) {
+        noteRepo.deleteNote(noteUnit);
+        noteRepository.removeAll(noteRepo.getNotes());
+        notesAdapterRecyclerView.notifyDataSetChanged();
     }
 }

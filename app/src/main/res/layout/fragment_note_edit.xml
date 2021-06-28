@@ -6,8 +6,8 @@
     android:orientation="vertical"
     tools:context=".view.NoteFullFragment">
 
-    <TextView
-        android:id="@+id/header_det_note"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/header_edit_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.MaterialComponents.Headline4"
@@ -15,8 +15,8 @@
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />
 
-    <TextView
-        android:id="@+id/text_note"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/text_edit_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
@@ -24,30 +24,12 @@
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />
 
-    <TextView
-        android:id="@+id/date_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:gravity="end"
-        android:padding="@dimen/note_item_margin"
-        tools:text="@string/sometext" />
-
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_date"
+        android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/button_date"
-        android:layout_margin="@dimen/button_margin"
-        android:backgroundTint="@color/appbar_back"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/button_time"
+        android:text="@string/button_save"
         android:backgroundTint="@color/appbar_back"/>
 
 </LinearLayout>

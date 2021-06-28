@@ -15,4 +15,5 @@
     <string name="select_user">Смена пользователя</string>
     <string name="settings">Настройки</string>
     <string name="option_select_list">К списку</string>
+    <string name="button_save">Сохранить</string>
 </resources>
