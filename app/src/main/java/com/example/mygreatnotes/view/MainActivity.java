@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onNoteDeleteSelected(NoteUnit noteUnit) {
-        notePresenterFragment.deleteNote(noteUnit);
         getSupportFragmentManager().popBackStack();
+        notePresenterFragment.deleteNote(noteUnit);
     }
 }

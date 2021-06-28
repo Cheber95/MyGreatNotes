@@ -76,7 +76,6 @@ public class NotePresenterFragment implements Parcelable {
 
     public void deleteNote(NoteUnit noteUnit) {
         noteRepo.deleteNote(noteUnit);
-        noteRepository.removeAll(noteRepo.getNotes());
-        notesAdapterRecyclerView.notifyDataSetChanged();
+        notesAdapterRecyclerView.setData(noteRepo.getNotes());
     }
 }

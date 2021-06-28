@@ -34,7 +34,8 @@ public class NoteRepository  {
     }
 
     public void deleteNote(NoteUnit noteUnit) {
-        noteRepo.remove(noteUnit);
+        int indexOfNote = noteRepo.indexOf(noteUnit);
+        noteRepo.remove(indexOfNote);
     }
 
     public void editNote(NoteUnit editableNote, @Nullable String newNoteName, @Nullable String newNoteText) {
