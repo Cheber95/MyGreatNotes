@@ -33,6 +33,14 @@ public class NoteFullFragment extends Fragment implements Observer {
 
     public static final String KEY_NOTE = "ARG_NOTE";
 
+    public interface OnNoteEditSelected {
+        void onNoteEditSelected(NoteUnit noteUnit);
+    }
+
+    public interface OnNoteDeleteSelected {
+        void onNoteDeleteSelected(NoteUnit noteUnit);
+    }
+
     public static NoteFullFragment newInstance(NoteUnit noteUnit) {
         NoteFullFragment fragment = new NoteFullFragment();
         Bundle bundle = new Bundle();
@@ -42,6 +50,8 @@ public class NoteFullFragment extends Fragment implements Observer {
     }
 
     private Publisher publisher;
+    private OnNoteEditSelected onNoteEditSelected;
+    private OnNoteDeleteSelected onNoteDeleteSelected;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -51,6 +61,14 @@ public class NoteFullFragment extends Fragment implements Observer {
             publisher = ((PublisherHolder) context).getPublisher();
             publisher.subscribe(this);
         }
+
+        if (context instanceof OnNoteEditSelected) {
+            onNoteEditSelected = (OnNoteEditSelected) context;
+        }
+
+        if (context instanceof OnNoteDeleteSelected) {
+            onNoteDeleteSelected = (OnNoteDeleteSelected) context;
+        }
     }
 
     @Override
@@ -59,6 +77,8 @@ public class NoteFullFragment extends Fragment implements Observer {
             publisher.unSubscribe(this);
         }
         publisher = null;
+        onNoteEditSelected = null;
+        onNoteDeleteSelected = null;
         super.onDetach();
     }
 
@@ -82,12 +102,13 @@ public class NoteFullFragment extends Fragment implements Observer {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        NoteUnit noteUnit = getArguments().getParcelable(KEY_NOTE);
         if (item.getItemId() == R.id.menu_edit) {
-            Toast.makeText(requireContext(),"options «Edit» selected", Toast.LENGTH_LONG).show();
+            onNoteEditSelected.onNoteEditSelected(noteUnit);
             return true;
         }
         if (item.getItemId() == R.id.menu_del) {
-            Toast.makeText(requireContext(),"options «Delete» selected", Toast.LENGTH_LONG).show();
+            onNoteDeleteSelected.onNoteDeleteSelected(noteUnit);
             return true;
         }
         return super.onOptionsItemSelected(item);

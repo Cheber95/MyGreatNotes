@@ -14,12 +14,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.mygreatnotes.R;
 import com.example.mygreatnotes.model.NoteRepository;
 import com.example.mygreatnotes.model.NoteUnit;
 import com.example.mygreatnotes.presenter.NotePresenterFragment;
+import com.example.mygreatnotes.presenter.NotesAdapterRecyclerView;
 import com.example.mygreatnotes.presenter.Publisher;
 import com.example.mygreatnotes.presenter.PublisherHolder;
 
@@ -32,6 +39,7 @@ public class NoteListFragment extends Fragment {
     public static final String KEY_LIST = "KEY_LIST";
     private OnNoteClicked onNoteClicked;
     private Publisher publisher;
+    private NotePresenterFragment notePresenterFragment;
 
     public static NoteListFragment newInstance(NotePresenterFragment notePresenterFragment) {
         NoteListFragment fragment = new NoteListFragment();
@@ -40,8 +48,6 @@ public class NoteListFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    private NotePresenterFragment notePresenterFragment;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -100,29 +106,25 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.notePresenterFragment = getArguments().getParcelable(KEY_LIST);
-        LinearLayout notesListContainer = view.findViewById(R.id.note_list_container);
 
-        for (int i = 0; i < notePresenterFragment.getNotesCount(); i++) {
-            NoteUnit noteUnit = notePresenterFragment.getNote(i);
-            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_note, notesListContainer, false);
-            TextView noteHeader = itemView.findViewById(R.id.item_note_textview);
-            noteHeader.setText(noteUnit.getNoteName());
+        RecyclerView notesListContainer = view.findViewById(R.id.note_list_container);
 
-            noteHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onNoteClicked != null ) {
-                        onNoteClicked.onNoteClicked(noteUnit);
-                    }
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        notesListContainer.setLayoutManager(linearLayoutManager);
 
-                    if (publisher != null ) {
-                        publisher.notify(noteUnit);
-                    }
-                }
-            });
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requireContext(),linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_divider));
+        notesListContainer.addItemDecoration(dividerItemDecoration);
 
-            notesListContainer.addView(noteHeader);
-        }
+        NotesAdapterRecyclerView notesAdapterRecyclerView = notePresenterFragment.getNotesAdapterRecyclerView();
+        notesListContainer.setAdapter(notesAdapterRecyclerView);
+
+        notesAdapterRecyclerView.setListener(new NotesAdapterRecyclerView.OnNoteClickListener() {
+            @Override
+            public void onNoteClickListener(@NonNull NoteUnit noteUnit) {
+                onNoteClicked.onNoteClicked(noteUnit);
+            }
+        });
     }
 
     @Override
