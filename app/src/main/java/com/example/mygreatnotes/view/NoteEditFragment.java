@@ -20,14 +20,10 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class NoteEditFragment extends Fragment {
 
+    public static final String TAG = "TAG_EDIT";
     private static final String EDIT_KEY = "EDIT_KEY";
     private NoteUnit noteUnit;
-
-    public interface OnNoteEdited {
-        void onNoteEdited(NoteUnit noteUnit, @Nullable String noteNewName, @Nullable String noteNewText);
-    }
-
-    private OnNoteEdited onNoteEdited;
+    private MainRouterImplementation mainRouter;
 
     public static NoteEditFragment newInstance(NoteUnit noteUnit) {
         NoteEditFragment fragment = new NoteEditFragment();
@@ -40,14 +36,14 @@ public class NoteEditFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnNoteEdited) {
-            onNoteEdited = (OnNoteEdited) context;
+        if (context instanceof MainRouterHolder) {
+            mainRouter = ((MainRouterHolder) context).getMainRouter();
         }
     }
 
     @Override
     public void onDetach() {
-        onNoteEdited = null;
+        mainRouter = null;
         super.onDetach();
     }
 
@@ -78,7 +74,7 @@ public class NoteEditFragment extends Fragment {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNoteEdited.onNoteEdited(
+                mainRouter.onNoteEdited(
                         noteUnit,
                         noteName.getText().toString(),
                         noteText.getText().toString());

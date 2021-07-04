@@ -32,14 +32,7 @@ import java.util.Calendar;
 public class NoteFullFragment extends Fragment implements Observer {
 
     public static final String KEY_NOTE = "ARG_NOTE";
-
-    public interface OnNoteEditSelected {
-        void onNoteEditSelected(NoteUnit noteUnit);
-    }
-
-    public interface OnNoteDeleteSelected {
-        void onNoteDeleteSelected(NoteUnit noteUnit);
-    }
+    public static final String TAG = "TAG_FULL";
 
     public static NoteFullFragment newInstance(NoteUnit noteUnit) {
         NoteFullFragment fragment = new NoteFullFragment();
@@ -50,8 +43,7 @@ public class NoteFullFragment extends Fragment implements Observer {
     }
 
     private Publisher publisher;
-    private OnNoteEditSelected onNoteEditSelected;
-    private OnNoteDeleteSelected onNoteDeleteSelected;
+    private MainRouterImplementation mainRouter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -62,12 +54,8 @@ public class NoteFullFragment extends Fragment implements Observer {
             publisher.subscribe(this);
         }
 
-        if (context instanceof OnNoteEditSelected) {
-            onNoteEditSelected = (OnNoteEditSelected) context;
-        }
-
-        if (context instanceof OnNoteDeleteSelected) {
-            onNoteDeleteSelected = (OnNoteDeleteSelected) context;
+        if (context instanceof MainRouterHolder) {
+            mainRouter = ((MainRouterHolder) context).getMainRouter();
         }
     }
 
@@ -77,8 +65,7 @@ public class NoteFullFragment extends Fragment implements Observer {
             publisher.unSubscribe(this);
         }
         publisher = null;
-        onNoteEditSelected = null;
-        onNoteDeleteSelected = null;
+        mainRouter = null;
         super.onDetach();
     }
 
@@ -104,11 +91,11 @@ public class NoteFullFragment extends Fragment implements Observer {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         NoteUnit noteUnit = getArguments().getParcelable(KEY_NOTE);
         if (item.getItemId() == R.id.menu_edit) {
-            onNoteEditSelected.onNoteEditSelected(noteUnit);
+            mainRouter.onNoteEditSelected(noteUnit);
             return true;
         }
         if (item.getItemId() == R.id.menu_del) {
-            onNoteDeleteSelected.onNoteDeleteSelected(noteUnit);
+            mainRouter.onNoteDeleteSelected(noteUnit);
             return true;
         }
         return super.onOptionsItemSelected(item);

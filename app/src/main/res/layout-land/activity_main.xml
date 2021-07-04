@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toStartOf="@id/container_details"
             tools:context=".view.MainActivity" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/container_details"

@@ -1,6 +1,5 @@
 package com.example.mygreatnotes.view;
 
-import androidx.annotation.NavigationRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -8,10 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -22,57 +19,40 @@ import com.example.mygreatnotes.presenter.Publisher;
 import com.example.mygreatnotes.presenter.PublisherHolder;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements
-        NoteListFragment.OnNoteClicked,
-        PublisherHolder,
-        NoteFullFragment.OnNoteEditSelected,
-        NoteEditFragment.OnNoteEdited,
-        NoteFullFragment.OnNoteDeleteSelected {
+public class MainActivity extends AppCompatActivity implements PublisherHolder, MainRouterHolder {
 
     private static final String NOTE_EDIT = "NOTE_EDIT";
     public static String ARG_NOTE = "ARG_NOTE";
     public static String KEY_PRESENTER = "KEY_PRESENTER";
     public final Publisher publisher = new Publisher();
     private NotePresenterFragment notePresenterFragment;
+    private MainRouterImplementation mainRouterImplementation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
-
-        NoteListFragment noteListFragment;
         boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
 
         if (savedInstanceState == null) {
             notePresenterFragment = new NotePresenterFragment(this);
-            noteListFragment = NoteListFragment.newInstance(notePresenterFragment);
-            if (isLandscape) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container,noteListFragment)
-                        .commit();
-            } else {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.container,noteListFragment)
-                        .commit();
-            }
+
         } else {
             notePresenterFragment = savedInstanceState.getParcelable(KEY_PRESENTER);
-            noteListFragment = NoteListFragment.newInstance(notePresenterFragment);
         }
+        mainRouterImplementation = new MainRouterImplementation(getSupportFragmentManager(), isLandscape, notePresenterFragment);
+        mainRouterImplementation.showList();
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
-
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
                 toolbar,
                 R.string.app_name,
-                R.string.app_name_full
+                 R.string.app_name_full
         );
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -85,43 +65,18 @@ public class MainActivity extends AppCompatActivity implements
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 if (item.getItemId() == R.id.option_select_list) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.container,noteListFragment)
-                            .commit();
+                    mainRouterImplementation.showList();
                 }
                 if (item.getItemId() == R.id.option_select_user) {
-                    Toast.makeText(MainActivity.this,"select user", Toast.LENGTH_LONG).show();
+                    mainRouterImplementation.showAuth();
                 }
                 if (item.getItemId() == R.id.option_settings) {
-                    Toast.makeText(MainActivity.this,"settings", Toast.LENGTH_LONG).show();
+                    mainRouterImplementation.showSettings();
                 }
                 return true;
             }
         });
     }
-
-    @Override
-    public void onNoteClicked(NoteUnit noteUnit) {
-
-        boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
-        
-
-        if (isLandscape) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container_details, NoteFullFragment.newInstance(noteUnit))
-                    .commit();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(ARG_NOTE)
-                    .replace(R.id.container, NoteFullFragment.newInstance(noteUnit))
-                    .commit();
-        }
-    }
-
-
 
     @Override
     public Publisher getPublisher() {
@@ -141,34 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNoteEditSelected(NoteUnit noteUnit) {
-        boolean isLandscape = getResources().getBoolean(R.bool.isLandscape);
-
-        if (isLandscape) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(NOTE_EDIT)
-                    .replace(R.id.container_details, NoteEditFragment.newInstance(noteUnit))
-                    .commit();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(NOTE_EDIT)
-                    .replace(R.id.container, NoteEditFragment.newInstance(noteUnit))
-                    .commit();
-        }
-    }
-
-    @Override
-    public void onNoteEdited(NoteUnit noteUnit, @Nullable String noteNewName, @Nullable String noteNewText) {
-        notePresenterFragment.editNote(noteUnit,noteNewName,noteNewText);
-        getSupportFragmentManager()
-                .popBackStack();
-    }
-
-    @Override
-    public void onNoteDeleteSelected(NoteUnit noteUnit) {
-        getSupportFragmentManager().popBackStack();
-        notePresenterFragment.deleteNote(noteUnit);
+    public MainRouterImplementation getMainRouter() {
+        return mainRouterImplementation;
     }
 }

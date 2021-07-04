@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +23,13 @@ public class NotesAdapterRecyclerView extends RecyclerView.Adapter<NotesAdapterR
         void onNoteClickListener(@NonNull NoteUnit noteUnit);
     }
 
+    public interface OnNoteLongClickListener {
+        void onNoteLongClickListener(@NonNull NoteUnit noteUnit, int index);
+    }
+
     private OnNoteClickListener listener;
+
+    private OnNoteLongClickListener longClickListener;
 
     public void setListener(OnNoteClickListener listener) {
         this.listener = listener;
@@ -30,6 +37,14 @@ public class NotesAdapterRecyclerView extends RecyclerView.Adapter<NotesAdapterR
 
     public OnNoteClickListener getListener() {
         return listener;
+    }
+
+    public void setLongClickListener(OnNoteLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
+    public OnNoteLongClickListener getLongClickListener() {
+        return longClickListener;
     }
 
     public void setData(List<NoteUnit> inputData) {
@@ -49,9 +64,7 @@ public class NotesAdapterRecyclerView extends RecyclerView.Adapter<NotesAdapterR
 
         NoteUnit noteUnit = data.get(position);
 
-        holder.noteTitle.setText(noteUnit.getNoteName());
-        holder.noteText.setText(noteUnit.getNoteText());
-        holder.noteDate.setText(noteUnit.getNoteDateToString());
+        holder.onBind(noteUnit);
     }
 
     @Override
@@ -70,6 +83,7 @@ public class NotesAdapterRecyclerView extends RecyclerView.Adapter<NotesAdapterR
             noteTitle = itemView.findViewById(R.id.note_title);
             noteText = itemView.findViewById(R.id.note_text);
             noteDate = itemView.findViewById(R.id.note_date);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -78,6 +92,24 @@ public class NotesAdapterRecyclerView extends RecyclerView.Adapter<NotesAdapterR
                     }
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    itemView.showContextMenu();
+                    if (getLongClickListener() != null) {
+                        int index = getAdapterPosition();
+                        getLongClickListener().onNoteLongClickListener(data.get(index),index);
+                    }
+                    return true;
+                }
+            });
+        }
+
+        public void onBind(NoteUnit noteUnit) {
+            noteTitle.setText(noteUnit.getNoteName());
+            noteText.setText(noteUnit.getNoteText());
+            noteDate.setText(noteUnit.getNoteDateToString());
         }
     }
 
