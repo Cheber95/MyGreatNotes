@@ -27,6 +27,7 @@ public class MainRouterImplementation implements MainRouter{
             fragmentManager
                     .beginTransaction()
                     .replace(R.id.container,NoteListFragment.newInstance(notePresenterFragment))
+                    .replace(R.id.container_details,NoteFullFragment.newInstance(notePresenterFragment.getNote(0)))
                     .commit();
         } else {
             fragmentManager

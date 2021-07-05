@@ -126,6 +126,7 @@ public class NoteListFragment extends Fragment {
         this.notePresenterFragment = getArguments().getParcelable(KEY_LIST);
 
         RecyclerView notesListContainer = view.findViewById(R.id.note_list_container);
+        registerForContextMenu(view);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         notesListContainer.setLayoutManager(linearLayoutManager);
