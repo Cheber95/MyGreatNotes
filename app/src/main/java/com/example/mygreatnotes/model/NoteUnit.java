@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.Calendar;
 
 public class NoteUnit implements Parcelable {
+    public static final String NOTE_KEY = "NOTE_KEY";
     private final int noteKey;
     private final String noteName;
     private final String noteText;

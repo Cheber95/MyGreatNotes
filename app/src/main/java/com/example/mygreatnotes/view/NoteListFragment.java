@@ -9,22 +9,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.mygreatnotes.R;
-import com.example.mygreatnotes.model.NoteRepository;
 import com.example.mygreatnotes.model.NoteUnit;
 import com.example.mygreatnotes.presenter.NotePresenterFragment;
 import com.example.mygreatnotes.presenter.NotesAdapterRecyclerView;
@@ -82,6 +76,9 @@ public class NoteListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        if (getResources().getBoolean(R.bool.isLandscape)) {
+            menu.clear();
+        }
         inflater.inflate(R.menu.menu_appbar_list,menu);
     }
 
@@ -108,12 +105,11 @@ public class NoteListFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_context_edit) {
-            mainRouter.onNoteEditSelected(notePresenterFragment.getContextMenuNote());
+            mainRouter.onNoteEditSelected(getArguments().getParcelable(NoteUnit.NOTE_KEY));
             return true;
         }
         if (item.getItemId() == R.id.menu_context_del) {
-            notePresenterFragment.deleteNote(notePresenterFragment.getContextMenuNote());
-            notePresenterFragment.getNotesAdapterRecyclerView().notifyItemRemoved(notePresenterFragment.getContextMenuIndex());
+            notePresenterFragment.deleteNote(getArguments().getParcelable(NoteUnit.NOTE_KEY));
             return true;
         }
 
@@ -148,8 +144,9 @@ public class NoteListFragment extends Fragment {
         notesAdapterRecyclerView.setLongClickListener(new NotesAdapterRecyclerView.OnNoteLongClickListener() {
             @Override
             public void onNoteLongClickListener(@NonNull NoteUnit noteUnit, int index) {
-                notePresenterFragment.setContextMenuIndex(index);
-                notePresenterFragment.setContextMenuNote(noteUnit);
+                getArguments().putParcelable(NoteUnit.NOTE_KEY, noteUnit);
+                //notePresenterFragment.setContextMenuIndex(index);
+                //notePresenterFragment.setContextMenuNote(noteUnit);
             }
         });
     }

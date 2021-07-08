@@ -2,17 +2,13 @@ package com.example.mygreatnotes.presenter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
-
-import com.example.mygreatnotes.R;
-import com.example.mygreatnotes.model.NoteRepository;
+import com.example.mygreatnotes.model.Callback;
+import com.example.mygreatnotes.model.NoteRepositoryImpl;
 import com.example.mygreatnotes.model.NoteUnit;
 import com.example.mygreatnotes.view.MainActivity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +18,7 @@ public class NotePresenterFragment implements Parcelable {
     private static final String KEY_REPO = "KEY_REPO";
     private MainActivity mainActivity;
     private List<NoteUnit> noteRepository;
-    private NoteRepository noteRepo;
+    private NoteRepositoryImpl noteRepo;
     private NotesAdapterRecyclerView notesAdapterRecyclerView;
     private int contextMenuIndex;
     private NoteUnit contextMenuNote;
@@ -45,15 +41,22 @@ public class NotePresenterFragment implements Parcelable {
 
     public NotePresenterFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        noteRepo = new NoteRepository();
-        this.noteRepository = noteRepo.getNotes();
+        noteRepo = new NoteRepositoryImpl();
+        noteRepository = new ArrayList<>();
+
+        noteRepo.getNotes(new Callback<List<NoteUnit>>() {
+            @Override
+            public void onSuccess(List<NoteUnit> result) {
+                noteRepository.addAll(result);
+            }
+        });
+
         notesAdapterRecyclerView = new NotesAdapterRecyclerView();
-        notesAdapterRecyclerView.setData(noteRepo.getNotes());
+        notesAdapterRecyclerView.setData(noteRepository);
     }
 
     protected NotePresenterFragment(Parcel in) {
          in.readList(this.noteRepository,NoteUnit.class.getClassLoader());
-         noteRepo.setData(noteRepository);
     }
 
     public static final Creator<NotePresenterFragment> CREATOR = new Creator<NotePresenterFragment>() {
@@ -72,10 +75,6 @@ public class NotePresenterFragment implements Parcelable {
         return notesAdapterRecyclerView;
     }
 
-    public int getNotesCount() {
-        return noteRepository.size();
-    }
-
     public NoteUnit getNote(int i) {
         return noteRepository.get(i);
     }
@@ -87,35 +86,48 @@ public class NotePresenterFragment implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(noteRepo.getNotes());
+        dest.writeList(noteRepository);
     }
 
     public void editNote(NoteUnit noteUnit, String noteNewName, String noteNewText) {
-        int position = noteRepo.getNotes().indexOf(noteUnit);
-        noteRepo.editNote(noteUnit,noteNewName,noteNewText);
-        notesAdapterRecyclerView.notifyItemChanged(position);
+        int position = noteRepository.indexOf(noteUnit);
+        noteRepo.editNote(new Callback<NoteUnit>() {
+            @Override
+            public void onSuccess(NoteUnit result) {
+                noteRepository.set(position,result);
+                notesAdapterRecyclerView.notifyItemChanged(position);
+            }
+        }, noteUnit, noteNewName,noteNewText);
     }
 
     public void deleteNote(NoteUnit noteUnit) {
-        int position = noteRepo.getNotes().indexOf(noteUnit);
-        noteRepo.deleteNote(noteUnit);
-        notesAdapterRecyclerView.setData(noteRepository);
-        notesAdapterRecyclerView.notifyItemRemoved(position);
+        noteRepo.deleteNote(new Callback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                int position = noteRepository.indexOf(noteUnit);
+                noteRepository.remove(noteUnit);
+                notesAdapterRecyclerView.setData(noteRepository);
+                notesAdapterRecyclerView.notifyItemRemoved(position);
+            }
+        }, noteUnit);
     }
 
     public NoteUnit addNote() {
-        int newNoteKey = noteRepository.size(); // плохая манера, подумать потом как создавать ключ
-        NoteUnit newNoteUnit = new NoteUnit(newNoteKey, "", "");
-        noteRepo.addNote(newNoteUnit);
-        notesAdapterRecyclerView.setData(noteRepo.getNotes());
-        notesAdapterRecyclerView.notifyItemInserted(notesAdapterRecyclerView.getItemCount());
-        return newNoteUnit;
+        noteRepo.addNote(new Callback<NoteUnit>() {
+            @Override
+            public void onSuccess(NoteUnit result) {
+                noteRepository.add(result);
+                notesAdapterRecyclerView.setData(noteRepository);
+                notesAdapterRecyclerView.notifyItemInserted(notesAdapterRecyclerView.getItemCount());
+            }
+        });
+        return noteRepository.get(noteRepository.size() - 1);
     }
 
     public void sortNotes() {
         Comparator<NoteUnit> comparator = Comparator.comparing(NoteUnit::getNoteName);
         Collections.sort(noteRepository, comparator);
-        notesAdapterRecyclerView.setData(noteRepo.getNotes());
+        notesAdapterRecyclerView.setData(noteRepository);
         notesAdapterRecyclerView.notifyDataSetChanged();
     }
 }
