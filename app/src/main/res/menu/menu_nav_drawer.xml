@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/option_select_list"
+        android:title="@string/option_select_list"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/option_select_user"
         android:title="@string/select_user"
@@ -12,10 +19,4 @@
         android:title="@string/settings"
         android:icon="@android:drawable/ic_menu_preferences"
         app:showAsAction="ifRoom"/>
-
-    <item
-        android:id="@+id/option_select_list"
-        android:title="@string/option_select_list"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        app:showAsAction="never"/>
 </menu>
