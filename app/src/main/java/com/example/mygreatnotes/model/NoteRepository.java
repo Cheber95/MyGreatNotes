@@ -13,7 +13,7 @@ public class NoteRepository  {
 
     public NoteRepository() {
         this.noteRepo = new ArrayList<>();
-        int noteCount = 150;
+        int noteCount = 5;
         for (int i = 1; i <= noteCount; i++) {
             noteRepo.add(new NoteUnit(i,"Заметка № " + i, "текст заметки № " + i));
         }
@@ -26,7 +26,10 @@ public class NoteRepository  {
     }
 
     public void setData(List<NoteUnit> noteRepo) {
-        this.noteRepo.removeAll(noteRepo);
+        List<NoteUnit> tmpData = new ArrayList<>();
+        tmpData.addAll(noteRepo);
+        this.noteRepo.clear();
+        this.noteRepo.addAll(tmpData);
     }
 
     public void addNote(NoteUnit noteUnit) {
@@ -34,8 +37,7 @@ public class NoteRepository  {
     }
 
     public void deleteNote(NoteUnit noteUnit) {
-        int indexOfNote = noteRepo.indexOf(noteUnit);
-        noteRepo.remove(indexOfNote);
+        noteRepo.remove(noteUnit);
     }
 
     public void editNote(NoteUnit editableNote, @Nullable String newNoteName, @Nullable String newNoteText) {

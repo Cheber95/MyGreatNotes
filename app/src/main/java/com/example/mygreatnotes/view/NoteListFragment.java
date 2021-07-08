@@ -2,6 +2,7 @@ package com.example.mygreatnotes.view;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,12 +33,8 @@ import com.example.mygreatnotes.presenter.PublisherHolder;
 
 public class NoteListFragment extends Fragment {
 
-    public interface OnNoteClicked {
-        void onNoteClicked(NoteUnit noteUnit);
-    }
-
     public static final String KEY_LIST = "KEY_LIST";
-    private OnNoteClicked onNoteClicked;
+    private MainRouterImplementation mainRouter;
     private Publisher publisher;
     private NotePresenterFragment notePresenterFragment;
 
@@ -53,8 +50,8 @@ public class NoteListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnNoteClicked) {
-            onNoteClicked = (OnNoteClicked) context;
+        if (context instanceof MainRouterHolder) {
+            mainRouter = ((MainRouterHolder) context).getMainRouter();
         }
 
         if (context instanceof PublisherHolder) {
@@ -64,7 +61,7 @@ public class NoteListFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        onNoteClicked = null;
+        mainRouter = null;
         publisher = null;
         super.onDetach();
     }
@@ -89,17 +86,38 @@ public class NoteListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.menu_context, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-            Toast.makeText(requireContext(),"Selected option «Create new»", Toast.LENGTH_LONG).show();
+            mainRouter.onNoteEditSelected(notePresenterFragment.addNote());
             return true;
         }
 
         if (item.getItemId() == R.id.menu_sort) {
-            Toast.makeText(requireContext(),"Selected option «Sort by name", Toast.LENGTH_LONG).show();
+            notePresenterFragment.sortNotes();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_context_edit) {
+            mainRouter.onNoteEditSelected(notePresenterFragment.getContextMenuNote());
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_context_del) {
+            notePresenterFragment.deleteNote(notePresenterFragment.getContextMenuNote());
+            notePresenterFragment.getNotesAdapterRecyclerView().notifyItemRemoved(notePresenterFragment.getContextMenuIndex());
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -108,6 +126,7 @@ public class NoteListFragment extends Fragment {
         this.notePresenterFragment = getArguments().getParcelable(KEY_LIST);
 
         RecyclerView notesListContainer = view.findViewById(R.id.note_list_container);
+        registerForContextMenu(view);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         notesListContainer.setLayoutManager(linearLayoutManager);
@@ -122,7 +141,15 @@ public class NoteListFragment extends Fragment {
         notesAdapterRecyclerView.setListener(new NotesAdapterRecyclerView.OnNoteClickListener() {
             @Override
             public void onNoteClickListener(@NonNull NoteUnit noteUnit) {
-                onNoteClicked.onNoteClicked(noteUnit);
+                mainRouter.onNoteClicked(noteUnit);
+            }
+        });
+
+        notesAdapterRecyclerView.setLongClickListener(new NotesAdapterRecyclerView.OnNoteLongClickListener() {
+            @Override
+            public void onNoteLongClickListener(@NonNull NoteUnit noteUnit, int index) {
+                notePresenterFragment.setContextMenuIndex(index);
+                notePresenterFragment.setContextMenuNote(noteUnit);
             }
         });
     }

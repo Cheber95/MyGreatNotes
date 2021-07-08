@@ -13,6 +13,8 @@ import com.example.mygreatnotes.model.NoteRepository;
 import com.example.mygreatnotes.model.NoteUnit;
 import com.example.mygreatnotes.view.MainActivity;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NotePresenterFragment implements Parcelable {
@@ -22,6 +24,24 @@ public class NotePresenterFragment implements Parcelable {
     private List<NoteUnit> noteRepository;
     private NoteRepository noteRepo;
     private NotesAdapterRecyclerView notesAdapterRecyclerView;
+    private int contextMenuIndex;
+    private NoteUnit contextMenuNote;
+
+    public void setContextMenuIndex(int contextMenuIndex) {
+        this.contextMenuIndex = contextMenuIndex;
+    }
+
+    public void setContextMenuNote(NoteUnit contextMenuNote) {
+        this.contextMenuNote = contextMenuNote;
+    }
+
+    public int getContextMenuIndex() {
+        return contextMenuIndex;
+    }
+
+    public NoteUnit getContextMenuNote() {
+        return contextMenuNote;
+    }
 
     public NotePresenterFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -71,11 +91,31 @@ public class NotePresenterFragment implements Parcelable {
     }
 
     public void editNote(NoteUnit noteUnit, String noteNewName, String noteNewText) {
+        int position = noteRepo.getNotes().indexOf(noteUnit);
         noteRepo.editNote(noteUnit,noteNewName,noteNewText);
+        notesAdapterRecyclerView.notifyItemChanged(position);
     }
 
     public void deleteNote(NoteUnit noteUnit) {
+        int position = noteRepo.getNotes().indexOf(noteUnit);
         noteRepo.deleteNote(noteUnit);
+        notesAdapterRecyclerView.setData(noteRepository);
+        notesAdapterRecyclerView.notifyItemRemoved(position);
+    }
+
+    public NoteUnit addNote() {
+        int newNoteKey = noteRepository.size(); // плохая манера, подумать потом как создавать ключ
+        NoteUnit newNoteUnit = new NoteUnit(newNoteKey, "", "");
+        noteRepo.addNote(newNoteUnit);
         notesAdapterRecyclerView.setData(noteRepo.getNotes());
+        notesAdapterRecyclerView.notifyItemInserted(notesAdapterRecyclerView.getItemCount());
+        return newNoteUnit;
+    }
+
+    public void sortNotes() {
+        Comparator<NoteUnit> comparator = Comparator.comparing(NoteUnit::getNoteName);
+        Collections.sort(noteRepository, comparator);
+        notesAdapterRecyclerView.setData(noteRepo.getNotes());
+        notesAdapterRecyclerView.notifyDataSetChanged();
     }
 }

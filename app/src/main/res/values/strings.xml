@@ -16,4 +16,6 @@
     <string name="settings">Настройки</string>
     <string name="option_select_list">К списку</string>
     <string name="button_save">Сохранить</string>
+    <string name="settings_on_fragments">Здесь находится меню настройки. Скоро здесь будет чисто и красиво :)</string>
+    <string name="auth_on_fragments">Здесь находится меню настройки. Скоро здесь будет чисто и красиво :)</string> />
 </resources>
