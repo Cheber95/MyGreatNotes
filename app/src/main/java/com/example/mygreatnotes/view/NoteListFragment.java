@@ -76,7 +76,7 @@ public class NoteListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        if (getResources().getBoolean(R.bool.isLandscape)) {
+        if (!getResources().getBoolean(R.bool.isLandscape)) {
             menu.clear();
         }
         inflater.inflate(R.menu.menu_appbar_list,menu);
@@ -91,7 +91,7 @@ public class NoteListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-            mainRouter.onNoteEditSelected(notePresenterFragment.addNote());
+            notePresenterFragment.addNote();
             return true;
         }
 

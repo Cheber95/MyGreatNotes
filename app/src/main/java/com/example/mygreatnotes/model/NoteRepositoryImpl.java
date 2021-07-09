@@ -16,7 +16,7 @@ public class NoteRepositoryImpl implements NoteRepository{
         this.noteRepo = new ArrayList<>();
         int noteCount = 5;
         for (int i = 1; i <= noteCount; i++) {
-            noteRepo.add(new NoteUnit(i,"Заметка № " + i, "текст заметки № " + i));
+            noteRepo.add(new NoteUnit(UUID.randomUUID().toString(),"Заметка № " + i, "текст заметки № " + i));
         }
         String longtext = "Важнейшее значение в романе имеют философские взгляды писателя. Публицистические главы предваряют и объясняют художественное описание событий. Фатализм Толстого связан с его пониманием стихийности истории как «бессознательной, общей, роевой жизни человечества». Главная мысль романа, по словам самого Толстого, — «мысль народная». Народ, в понимании Толстого — главная движущая сила истории, носитель лучших человеческих качеств. Главные герои проходят путь к народу (Пьер на Бородинском поле; «наш барин» — называли Безухова солдаты). Идеал Толстого воплощён в образе Платона Каратаева. Идеал женский — в образе Наташи Ростовой. Кутузов и Наполеон — нравственные полюсы романа: «Нет величия там, где нет простоты, добра и правды». «Что нужно для счастья? Тихая семейная жизнь… с возможностью делать добро людям» (Л. Н. Толстой). ";
         noteRepo.get(1).setNoteNewText(longtext);
@@ -37,7 +37,7 @@ public class NoteRepositoryImpl implements NoteRepository{
 
     @Override
     public void addNote(Callback<NoteUnit> callback) {
-        NoteUnit noteUnit = new NoteUnit(UUID.randomUUID().hashCode(),"","");
+        NoteUnit noteUnit = new NoteUnit(UUID.randomUUID().toString(),"","");
         noteRepo.add(noteUnit);
         callback.onSuccess(noteUnit);
     }
