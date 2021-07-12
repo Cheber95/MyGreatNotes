@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.mygreatnotes.R;
 import com.example.mygreatnotes.model.NoteUnit;
+import com.example.mygreatnotes.presenter.NotePresenterFragment;
 import com.example.mygreatnotes.presenter.Observer;
 import com.example.mygreatnotes.presenter.Publisher;
 import com.example.mygreatnotes.presenter.PublisherHolder;

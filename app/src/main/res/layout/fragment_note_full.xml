@@ -10,7 +10,7 @@
         android:id="@+id/header_det_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.MaterialComponents.Headline4"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         android:gravity="center"
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />
 
@@ -28,7 +28,6 @@
         android:id="@+id/date_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.MaterialComponents.Caption"
         android:gravity="end"
         android:padding="@dimen/note_item_margin"
         tools:text="@string/sometext" />

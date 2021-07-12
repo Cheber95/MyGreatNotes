@@ -21,23 +21,14 @@ public class NotePresenterFragment implements Parcelable {
     private List<NoteUnit> noteRepository;
     private NoteRepositoryFireStoreImpl noteRepo = new NoteRepositoryFireStoreImpl();;
     private NotesAdapterRecyclerView notesAdapterRecyclerView;
-    private int contextMenuIndex;
-    private NoteUnit contextMenuNote;
+    private boolean isAuth;
 
-    public void setContextMenuIndex(int contextMenuIndex) {
-        this.contextMenuIndex = contextMenuIndex;
+    public boolean isAuth() {
+        return isAuth;
     }
 
-    public void setContextMenuNote(NoteUnit contextMenuNote) {
-        this.contextMenuNote = contextMenuNote;
-    }
-
-    public int getContextMenuIndex() {
-        return contextMenuIndex;
-    }
-
-    public NoteUnit getContextMenuNote() {
-        return contextMenuNote;
+    public void setAuth(boolean auth) {
+        isAuth = auth;
     }
 
     public NotePresenterFragment(MainActivity mainActivity) {
@@ -95,7 +86,6 @@ public class NotePresenterFragment implements Parcelable {
             @Override
             public void onSuccess(NoteUnit result) {
                 noteRepository.set(position,result);
-                mainActivity.getMainRouter().onNoteEditSelected(result);
                 notesAdapterRecyclerView.setData(noteRepository);
                 notesAdapterRecyclerView.notifyItemChanged(position);
             }

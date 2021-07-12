@@ -88,7 +88,15 @@ public class NoteRepositoryFireStoreImpl implements NoteRepository {
 
     @Override
     public void deleteNote(Callback<Void> callback, NoteUnit noteUnit) {
-
+        firebaseFirestore.collection(NOTES)
+                .document(noteUnit.getNoteKey())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        callback.onSuccess(task.getResult());
+                    }
+                });
     }
 
     @Override

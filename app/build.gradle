@@ -6,7 +6,7 @@ plugins {
 android {
     signingConfigs {
         MyGreatNotes {
-            storeFile file('./notesappkey.jks')
+            storeFile file('G:\\ANTON\\_prog\\android_studio_projects\\MyGreatNotes\\app\\notesappkey.jks')
             storePassword 'Bananamama*25'
             keyAlias 'GreatNotes'
             keyPassword 'Bananamama*25'
@@ -47,6 +47,10 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.vk:androidsdk:2.2.0'
+
     implementation 'androidx.fragment:fragment:1.2.5'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
