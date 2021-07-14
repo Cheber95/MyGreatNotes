@@ -6,7 +6,7 @@ plugins {
 android {
     signingConfigs {
         MyGreatNotes {
-            storeFile file('G:\\ANTON\\_prog\\android_studio_projects\\MyGreatNotes\\app\\notesappkey.jks')
+            storeFile file('.notesappkey.jks')
             storePassword 'Bananamama*25'
             keyAlias 'GreatNotes'
             keyPassword 'Bananamama*25'
