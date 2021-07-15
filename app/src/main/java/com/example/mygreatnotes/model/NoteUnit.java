@@ -7,48 +7,38 @@ import java.util.Calendar;
 
 public class NoteUnit implements Parcelable {
     public static final String NOTE_KEY = "NOTE_KEY";
-    private final int noteKey;
-    private final String noteName;
-    private final String noteText;
-    private final Calendar noteDate = Calendar.getInstance();
+    private String noteKey;
+    private String noteName;
+    private String noteText;
+    private Calendar noteDate = Calendar.getInstance();
 
     public void setNoteNewName(String noteNewName) {
-        this.noteNewName = noteNewName;
-        noteNewDate.setTimeInMillis(System.currentTimeMillis());
+        this.noteName = noteNewName;
+        noteDate.setTimeInMillis(System.currentTimeMillis());
     }
 
     public void setNoteNewText(String noteNewText) {
-        this.noteNewText = noteNewText;
-        noteNewDate.setTimeInMillis(System.currentTimeMillis());
+        this.noteText = noteNewText;
+        noteDate.setTimeInMillis(System.currentTimeMillis());
     }
 
     public void setNoteNewDate(Calendar noteNewDate) {
-        this.noteNewDate = noteNewDate;
+        this.noteDate = noteNewDate;
     }
 
-    private String noteNewName = "";
-    private String noteNewText = "";
-    private Calendar noteNewDate;
 
-    public NoteUnit(int noteKey, String noteName, String noteText) {
+    public NoteUnit(String noteKey, String noteName, String noteText) {
         this.noteKey = noteKey;
         this.noteName = noteName;
         this.noteText = noteText;
         noteDate.setTimeInMillis(System.currentTimeMillis());
-
-        this.noteNewName = this.noteName;
-        this.noteNewText = this.noteText;
-        this.noteNewDate = this.noteDate;
     }
 
     protected NoteUnit(Parcel in) {
-        noteKey = in.readInt();
+        noteKey = in.readString();
         noteName = in.readString();
         noteText = in.readString();
         noteDate.setTimeInMillis(in.readLong());
-        this.noteNewName = noteName;
-        this.noteNewText = noteText;
-        this.noteNewDate = noteDate;
     }
 
     public static final Creator<NoteUnit> CREATOR = new Creator<NoteUnit>() {
@@ -69,53 +59,24 @@ public class NoteUnit implements Parcelable {
         System.out.println("Дата создания: " + this.noteDate.toString());
     }
 
-    public int getNoteKey() {
+    public String getNoteKey() {
         return noteKey;
     }
 
     public String getNoteName() {
-        return noteNewName;
+        return noteName;
     }
 
     public String getNoteText() {
-        return noteNewText;
+        return noteText;
     }
 
     public Calendar getNoteDate() {
-        return noteNewDate;
+        return noteDate;
     }
 
     public String getNoteDateToString() {
-        String res;
-        int year = noteNewDate.get(Calendar.YEAR);
-        int month = noteNewDate.get(Calendar.MONTH) + 1;
-        int day = noteNewDate.get(Calendar.DAY_OF_MONTH);
-        int hour = noteNewDate.get(Calendar.HOUR_OF_DAY);
-        int min = noteNewDate.get(Calendar.MINUTE);
-        String monthString = "";
-        String hourString = "";
-        String minString = "";
-
-        if (month < 10) {
-            monthString = "0" + month;
-        } else {
-            monthString = String.valueOf(month);
-        }
-
-        if (hour < 10) {
-            hourString = "0" + hour;
-        } else {
-            hourString = String.valueOf(hour);
-        }
-
-        if (min < 10) {
-            minString = "0" + min;
-        } else {
-            minString = String.valueOf(min);
-        }
-
-        res = day + "." + monthString + "." + year + " " + hourString + ":" + minString;
-        return res;
+        return noteDate.getTime().toString();
     }
 
     @Override
@@ -125,9 +86,9 @@ public class NoteUnit implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(noteKey);
-        dest.writeString(noteNewName);
-        dest.writeString(noteNewText);
-        dest.writeLong(noteNewDate.getTimeInMillis());
+        dest.writeString(noteKey);
+        dest.writeString(noteName);
+        dest.writeString(noteText);
+        dest.writeLong(noteDate.getTimeInMillis());
     }
 }

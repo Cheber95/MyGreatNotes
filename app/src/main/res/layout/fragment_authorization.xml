@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/invite_to_google"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
         android:text="@string/auth_on_fragments"
-        android:layout_margin="@dimen/note_item_margin"
-        android:gravity="center"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/button_margin"/>
 
-</FrameLayout>
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/invite_to_VK"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/auth_on_fragments_VK"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/button_margin"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sign_btn_VK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/auth_on_VK"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.mygreatnotes.model.Callback;
+import com.example.mygreatnotes.model.NoteRepositoryFireStoreImpl;
 import com.example.mygreatnotes.model.NoteRepositoryImpl;
 import com.example.mygreatnotes.model.NoteUnit;
 import com.example.mygreatnotes.view.MainActivity;
@@ -18,41 +19,31 @@ public class NotePresenterFragment implements Parcelable {
     private static final String KEY_REPO = "KEY_REPO";
     private MainActivity mainActivity;
     private List<NoteUnit> noteRepository;
-    private NoteRepositoryImpl noteRepo;
+    private NoteRepositoryFireStoreImpl noteRepo = new NoteRepositoryFireStoreImpl();;
     private NotesAdapterRecyclerView notesAdapterRecyclerView;
-    private int contextMenuIndex;
-    private NoteUnit contextMenuNote;
+    private boolean isAuth;
 
-    public void setContextMenuIndex(int contextMenuIndex) {
-        this.contextMenuIndex = contextMenuIndex;
+    public boolean isAuth() {
+        return isAuth;
     }
 
-    public void setContextMenuNote(NoteUnit contextMenuNote) {
-        this.contextMenuNote = contextMenuNote;
-    }
-
-    public int getContextMenuIndex() {
-        return contextMenuIndex;
-    }
-
-    public NoteUnit getContextMenuNote() {
-        return contextMenuNote;
+    public void setAuth(boolean auth) {
+        isAuth = auth;
     }
 
     public NotePresenterFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        noteRepo = new NoteRepositoryImpl();
         noteRepository = new ArrayList<>();
+        notesAdapterRecyclerView = new NotesAdapterRecyclerView();
 
         noteRepo.getNotes(new Callback<List<NoteUnit>>() {
             @Override
             public void onSuccess(List<NoteUnit> result) {
                 noteRepository.addAll(result);
+                notesAdapterRecyclerView.setData(noteRepository);
+                notesAdapterRecyclerView.notifyDataSetChanged();
             }
         });
-
-        notesAdapterRecyclerView = new NotesAdapterRecyclerView();
-        notesAdapterRecyclerView.setData(noteRepository);
     }
 
     protected NotePresenterFragment(Parcel in) {
@@ -95,6 +86,7 @@ public class NotePresenterFragment implements Parcelable {
             @Override
             public void onSuccess(NoteUnit result) {
                 noteRepository.set(position,result);
+                notesAdapterRecyclerView.setData(noteRepository);
                 notesAdapterRecyclerView.notifyItemChanged(position);
             }
         }, noteUnit, noteNewName,noteNewText);
@@ -112,16 +104,16 @@ public class NotePresenterFragment implements Parcelable {
         }, noteUnit);
     }
 
-    public NoteUnit addNote() {
+    public void addNote() {
         noteRepo.addNote(new Callback<NoteUnit>() {
             @Override
             public void onSuccess(NoteUnit result) {
                 noteRepository.add(result);
+                mainActivity.getMainRouter().onNoteEditSelected(result);
                 notesAdapterRecyclerView.setData(noteRepository);
                 notesAdapterRecyclerView.notifyItemInserted(notesAdapterRecyclerView.getItemCount());
             }
         });
-        return noteRepository.get(noteRepository.size() - 1);
     }
 
     public void sortNotes() {

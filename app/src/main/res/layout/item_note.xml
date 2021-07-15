@@ -28,7 +28,7 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/note_title_inlist_height"
             android:id="@+id/note_title"
             tools:text="@string/sometext"
             android:layout_marginStart="@dimen/note_item_margin"
@@ -42,11 +42,12 @@
             />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/note_text_inlist_height"
             android:id="@+id/note_text"
             android:layout_marginStart="@dimen/note_item_margin"
             android:layout_marginEnd="@dimen/note_item_margin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:text="@string/sometext"
             app:layout_constraintStart_toEndOf="@+id/note_pic"
             app:layout_constraintTop_toBottomOf="@id/note_title"
@@ -57,6 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/note_date"
+            android:layout_marginTop="@dimen/note_item_margin"
             android:layout_marginEnd="@dimen/note_item_margin"
             tools:text="@string/sometext"
             android:layout_gravity="end"
